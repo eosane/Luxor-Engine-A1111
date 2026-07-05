@@ -1,0 +1,144 @@
+#!/bin/bash
+################################################################################
+# Luxor Engine WebUI User Configuration
+# 
+# This file allows you to customize the Luxor Engine startup behavior.
+# Copy this file to webui-user.sh and modify as needed.
+#
+# DO NOT EDIT webui.sh directly - all customizations go here.
+################################################################################
+
+# =============================================================================
+# SECTION 1: LUXOR MEMORY MANAGER CONFIGURATION (lxgptools/TCMalloc)
+# =============================================================================
+
+# Disable TCMalloc preload entirely (legacy compatibility)
+# Set to 1 to disable, leave commented/empty to enable
+# NO_TCMALLOC=0
+
+# Enable verbose logging for memory manager preload detection
+# Useful for debugging LD_PRELOAD issues
+# PRELOAD_DEBUG=0
+
+# =============================================================================
+# SECTION 2: RYOKO PLATFORM INTEGRATION (READ CAREFULLY)
+# =============================================================================
+# 
+# IMPORTANT: This section prepares Luxor for Ryoko platform integration.
+# Modify these variables to connect your Luxor instance to Ryoko.
+#
+# The following variables WILL be used by the Ryoko orchestration layer
+# to manage memory profiles, preload paths, and execution modes.
+#
+# ▼▼▼ BEGIN: RYOKO CONFIGURATION SECTION ▼▼▼
+# 
+# Edit the following variables with your Ryoko environment details:
+
+# RYOKO_PRELOAD_PATH: Custom path to lxgptools library (e.g., /opt/ryoko/libs/libtcmalloc.so.4)
+# Leave commented if using system libtcmalloc
+# RYOKO_PRELOAD_PATH="/opt/ryoko/libs/libtcmalloc.so.4"
+
+# RYOKO_MEMORY_PROFILE: Memory allocation strategy for Stable Diffusion workloads
+# Valid values: aggressive|balanced|conservative
+# - aggressive: Maximum memory preallocation for fast inference (use with high VRAM)
+# - balanced: Default profile, good for mixed workloads (RECOMMENDED for most users)
+# - conservative: Minimal allocation, best for memory-constrained environments
+# RYOKO_MEMORY_PROFILE="balanced"
+
+# RYOKO_FALLBACK_MODE: Behavior when Ryoko platform is unavailable
+# Valid values: use_system|skip
+# - use_system: Fall back to system TCMalloc if Ryoko unavailable (recommended)
+# - skip: Disable TCMalloc entirely if Ryoko unavailable
+# RYOKO_FALLBACK_MODE="use_system"
+
+# RYOKO_ORCHESTRATION_URL: Ryoko control plane endpoint (will be populated by Ryoko platform)
+# Leave commented until Ryoko provisioning is complete
+# RYOKO_ORCHESTRATION_URL="https://ryoko-control.example.com:8443"
+
+# RYOKO_NODE_TOKEN: Authentication token for this Luxor instance (will be provided by Ryoko)
+# Leave commented until Ryoko provisioning is complete
+# RYOKO_NODE_TOKEN="your-ryoko-node-token-here"
+
+# 
+# ▲▲▲ END: RYOKO CONFIGURATION SECTION ▲▲▲
+# 
+# Status: To verify Ryoko integration is active, run:
+#   bash webui.sh --check-ryoko
+#
+
+# =============================================================================
+# SECTION 3: PYTHON AND ENVIRONMENT
+# =============================================================================
+
+# Path to Python executable (leave blank for auto-detection)
+# python_cmd="python3"
+
+# Virtual environment directory (use "-" to disable venv)
+# venv_dir="venv"
+
+# =============================================================================
+# SECTION 4: GRADIO AND WEBUI
+# =============================================================================
+
+# Listen on all network interfaces (0.0.0.0) instead of localhost
+# GRADIO_SERVER_NAME=127.0.0.1
+
+# Port for WebUI server
+# GRADIO_SERVER_PORT=7860
+
+# Enable Gradio share link
+# GRADIO_SHARE=1
+
+# =============================================================================
+# SECTION 5: PYTORCH AND GPU CONFIGURATION
+# =============================================================================
+
+# Device (cuda, cpu, etc.)
+# CUDA_VISIBLE_DEVICES=0
+
+# Number of GPU device to use
+# DEVICE_ID=0
+
+# =============================================================================
+# SECTION 6: OPTIMIZATION FLAGS
+# =============================================================================
+
+# Use Accelerate for distributed training (if available)
+# ACCELERATE=False
+
+# Use xFormers for memory-efficient attention
+# FORCE_USE_CPU=cpu
+
+# Disable memory optimization
+# DISABLE_MMAP=0
+
+# =============================================================================
+# SECTION 7: STABLE DIFFUSION MODEL PATHS
+# =============================================================================
+
+# Custom path to models directory
+# ckpt_dir="models/Stable-diffusion"
+
+# Custom path to VAE models
+# vae_dir="models/VAE"
+
+# =============================================================================
+# NOTES FOR DEVELOPERS
+# =============================================================================
+#
+# How Luxor loads configuration:
+# 1. webui.sh sets SCRIPT_DIR to its directory
+# 2. If macOS detected, sources webui-macos-env.sh
+# 3. Sources lib/preload.sh (NEW: memory manager module)
+# 4. Sources THIS FILE (webui-user.sh) if it exists
+# 5. All variables above are available to launch.py and Python modules
+#
+# Ryoko Integration Roadmap:
+# - Phase 1 (current): RYOKO_* variables prepared but inactive
+# - Phase 2: Ryoko platform reads these vars from orchestration API
+# - Phase 3: Ryoko dynamically updates RYOKO_* vars at runtime
+# - Phase 4: Full closed-loop memory management via Ryoko control plane
+#
+# To enable debugging:
+#   PRELOAD_DEBUG=1 bash webui.sh
+#
