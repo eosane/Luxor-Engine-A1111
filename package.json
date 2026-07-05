@@ -1,0 +1,19 @@
+{
+  "name": "luxor-engine-a1111",
+  "version": "1.0.0",
+  "description": "Versión optimizada y personalizada de Stable Diffusion WebUI integrada con motor lxgptools para el ecosistema Luxor.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eosane/Luxor-Engine-A1111.git"
+  },
+  "author": "@eosane",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.40.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "fix": "eslint --fix .",
+    "start": "bash start_luxor.sh"
+  }
+}
